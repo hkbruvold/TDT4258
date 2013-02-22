@@ -8,9 +8,9 @@
 CC = avr32-gcc # is also used for linking
 CFLAGS = -Wall -g -c
 LDFLAGS =
-SOURCES = main.c
+SOURCES = ex1.c
 OBJECTS = $(SOURCES:.c=.o)
-OUTFILE = main.elf
+OUTFILE = ex1.elf
 
 AVR32PROGRAM = avr32program
 
