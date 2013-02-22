@@ -6,8 +6,8 @@
 
 
 CC = avr32-gcc # is also used for linking
-CFLAGS = -W all -g -c
-LDFLAGS =
+CFLAGS = -Wall -g -c
+LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
 SOURCES = ex1.c
 OBJECTS = $(SOURCES:.c=.o)
 OUTFILE = ex1.elf
