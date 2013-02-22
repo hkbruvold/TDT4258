@@ -4,6 +4,8 @@
  *
  *****************************************************************************/
 
+#include <stdio.h>
+
 #include <avr32/ap7000.h>
 #include <sys/interrupts.h>
 
@@ -13,4 +15,7 @@
 
 struct ledstate {
   int leds;
-}
+};
+
+int main(int argc, char *argv[]);
+__int_handler *int_handler(void);

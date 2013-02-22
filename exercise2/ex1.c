@@ -35,7 +35,7 @@ __int_handler *int_handler(void) {
   }
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
   volatile avr32_pio_t *pioc = &AVR32_PIOC;
   volatile avr32_pio_t *piob = &AVR32_PIOB;
 
@@ -54,16 +54,16 @@ int main(void) {
   set_interrupts_base((void*) AVR32_INTC_ADDRESS);
   register_interrupt((__int_handler) (int_handler),
                      AVR32_PIOC_IRQ/32, AVR32_PIOC_IRQ%32,
-                     INT0);
+                     AVR32_INTC_INT0);
   init_interrupts();
 
   /* turn on first LED */
   piob->codr = 0xff;
-  ls->leds = 1;
+  ls.leds = 1;
   piob->sodr = ls.leds;
 
   /* start main loop */
   while (1) {
-    SLEEP(AVR32_PM_SMODE_FROZEN);
+    
   }
 }
