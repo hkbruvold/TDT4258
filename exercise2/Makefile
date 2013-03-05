@@ -6,7 +6,7 @@
 
 
 CC = avr32-gcc # is also used for linking
-CFLAGS = -Wall -g -c
+CFLAGS = -Wall -g -c -Iinclude
 LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
 SOURCES = ex1.c
 OBJECTS = $(SOURCES:.c=.o)
@@ -15,6 +15,7 @@ OUTFILE = ex1.elf
 AVR32PROGRAM = avr32program
 
 all: $(OUTFILE)
+	
 
 # link
 $(OUTFILE): $(OBJECTS)
@@ -24,10 +25,10 @@ $(OUTFILE): $(OBJECTS)
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-upload: $(OUTFILE)
+upload: 
 	$(AVR32PROGRAM) halt
 	sleep 3
-	$(AVR32PROGRAM) program -e -f0,8Mb $<
+	$(AVR32PROGRAM) program -e -f0,8Mb $(OUTFILE)
 
 clean:
-	rm $(OBJECTS) $(OUTFILE)
+	rm *.o *.elf
