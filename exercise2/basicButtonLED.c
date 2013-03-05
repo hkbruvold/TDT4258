@@ -22,6 +22,8 @@ int main(int argc, char *argv[]) {
   while (1) {
     int a = pioc->pdsr;
     piob->codr = 0xff;
-    pioc->sodr = a;
+    piob->sodr = ~a;
   }
+  
+  return 0;
 }
