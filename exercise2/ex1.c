@@ -6,7 +6,7 @@
 
 #include "ex1.h"
 
-__int_handler *int_handler(void) {
+void *int_handler(void) {
   volatile avr32_pio_t *pioc = &AVR32_PIOC;
   volatile avr32_pio_t *piob = &AVR32_PIOB;
   
@@ -51,10 +51,10 @@ int main(int argc, char *argv[]) {
   piob->oer = 0xff;
 
   /* initialise interrupt handling */
-  set_interrupts_base((void*) AVR32_INTC_ADDRESS);
-  register_interrupt((__int_handler) (int_handler),
+  set_interrupts_base((void *)AVR32_INTC_ADDRESS);
+  register_interrupt(int_handler,
                      AVR32_PIOC_IRQ/32, AVR32_PIOC_IRQ%32,
-                     AVR32_INTC_INT0);
+                     0);
   init_interrupts();
 
   /* turn on first LED */
@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
   piob->sodr = ls.leds;
 
   /* start main loop */
-  while (1) {
-    
-  }
+  while (1);
+  return 0;
 }
