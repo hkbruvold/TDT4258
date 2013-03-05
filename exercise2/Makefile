@@ -6,7 +6,7 @@
 
 
 CC = avr32-gcc # is also used for linking
-CFLAGS = -Wall -g -c -Iinclude
+CFLAGS = -Wall -g -c
 LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
 SOURCES = ex1.c
 OBJECTS = $(SOURCES:.c=.o)
