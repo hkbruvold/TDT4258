@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
   /* initialise buttons */
   pioc->per = 0xff;
   pioc->puer = 0xff;
-  pioc->ier = 0xff;
   
   /* initialise LEDs */
   piob->per = 0xff;
