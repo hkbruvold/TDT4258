@@ -1,29 +1,34 @@
-CC=avr32-gcc
-CFLAGS=-g -Wall -Iinclude 
-LDFLAGS=-g -Wall -pedantic -Llib -lavr32b-interrupts -lm
-TARGET=ex2.elf
+###############################################################################
+#
+# Exercise 2 Makefile
+#
+###############################################################################
 
 
-# Command to upload program to flash 
+CC = avr32-gcc # is also used for linking
+CFLAGS = -Wall -g -Iinclude
+LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
+SOURCES = ex2.c
+OBJECTS = $(SOURCES:.c=.o)
+OUTFILE = ex2.elf
+
 AVR32PROGRAM = avr32program
 
-####### RULES ##########################################################
-.PHONY : all
-all: $(TARGET)
+all: $(OUTFILE)
+	
 
-ex2.elf: ex2.o
+# link
+$(OUTFILE): $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-ex2.o: ex2.c 
+# make object files
+.c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# upload to STK1000 (program flash)
-.PHONY : upload
-upload : $(TARGET)
+upload: 
 	$(AVR32PROGRAM) halt
 	sleep 3
-	$(AVR32PROGRAM) program -e -f0,8Mb $<
+	$(AVR32PROGRAM) program -e -f0,8Mb $(OUTFILE)
 
-.PHONY : clean
-clean :
-	rm -rf *.o *.elf *.*~
+clean:
+	rm *.o *.elf
