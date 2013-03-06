@@ -1,34 +1,29 @@
-###############################################################################
-#
-# Exercise 2 Makefile
-#
-###############################################################################
+CC=avr32-gcc
+CFLAGS=-g -Wall -Iinclude 
+LDFLAGS=-g -Wall -pedantic -Llib -lavr32b-interrupts -lm
+TARGET=ex2.elf
 
 
-CC = avr32-gcc # is also used for linking
-CFLAGS = -Wall -g -c
-LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
-SOURCES = ex1.c
-OBJECTS = $(SOURCES:.c=.o)
-OUTFILE = ex1.elf
-
+# Command to upload program to flash 
 AVR32PROGRAM = avr32program
 
-all: $(OUTFILE)
-	
+####### RULES ##########################################################
+.PHONY : all
+all: $(TARGET)
 
-# link
-$(OUTFILE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $^ -o $@
+ex2.elf: ex2.o
+	$(CC) $^ -o $@ $(LDFLAGS)
 
-# make object files
-.c.o:
-	$(CC) $(CFLAGS) $< -o $@
+ex2.o: ex2.c 
+	$(CC) $(CFLAGS) -c $< -o $@
 
-upload: 
+# upload to STK1000 (program flash)
+.PHONY : upload
+upload : $(TARGET)
 	$(AVR32PROGRAM) halt
 	sleep 3
-	$(AVR32PROGRAM) program -e -f0,8Mb $(OUTFILE)
+	$(AVR32PROGRAM) program -e -f0,8Mb $<
 
-clean:
-	rm *.o *.elf
+.PHONY : clean
+clean :
+	rm -rf *.o *.elf *.*~
