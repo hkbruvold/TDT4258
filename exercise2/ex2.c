@@ -4,7 +4,7 @@
  *
  *****************************************************************************/
 
-#include "oeving2.h"
+#include "ex2.h"
 
 volatile avr32_pio_t *piob = &AVR32_PIOB;	// piob; buttons
 volatile avr32_pio_t *pioc = &AVR32_PIOC;	// pioc; leds
