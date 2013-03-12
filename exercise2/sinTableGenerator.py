@@ -33,7 +33,7 @@ def generate(frequency, sampleRate, maxAmplitude):
 
 for i in range(len(notes)):
     table = map(int, generate(frequencies[i], sampleRate, maxAmplitude))
-    sys.stdout.write(notes[i] + "[" + str(len(table)) + "]" + " = ")
+    sys.stdout.write("short " + notes[i] + "[" + str(len(table)) + "]" + " = ")
     
     sys.stdout.write("{")
     sys.stdout.write(str(int(table.pop(0))))
