@@ -8,8 +8,10 @@
 
 volatile avr32_pio_t *piob = &AVR32_PIOB;	// piob; buttons
 volatile avr32_pio_t *pioc = &AVR32_PIOC;	// pioc; leds
-volatile avr32_dac_t *dac = &AVR32_ABDAC;
+volatile avr32_abdac_t *abdac = &AVR32_ABDAC;
 volatile avr32_pm_t *pm = &AVR32_PM;
+
+int playingSound;
 
 int main (int argc, char *argv[]) {
   initHardware();
@@ -24,6 +26,8 @@ void initHardware (void) {
   initLeds();
   initButtons();
   initAudio();
+
+  pioc->codr = 0xff;
 }
 
 void initIntc(void) {
@@ -46,40 +50,62 @@ void initLeds(void) {
 void initAudio(void) {
   register_interrupt(abdac_isr, AVR32_ABDAC_IRQ/32, AVR32_ABDAC_IRQ % 32, ABDAC_INT_LEVEL);
   
-  piob->pdr.p20 = 1;
-  piob->pdr.p21 = 1;
+  piob->PDR.p20 = 1;
+  piob->PDR.p21 = 1;
 
-  piob->asr.p20 = 1;
-  piob->asr.p21 = 1;
+  piob->ASR.p20 = 1;
+  piob->ASR.p21 = 1;
   
-  pm->pm_gcctrl[6] = data; /* something goes here*/
-  
-  dac->cr.en = 1;
-  dac->ier.tx_ready = 1;
+  pm->GCCTRL[6].diven = 0;
+  pm->GCCTRL[6].pllsel = 0;
+  pm->GCCTRL[6].oscsel = 1;
+  pm->GCCTRL[6].cen = 1;  
+
+  abdac->CR.en = 1;
+  abdac->IER.tx_ready = 1;
 }
 
 void button_isr(void) {
-  int pressedButton = piob->isr;
-  pioc->codr = 0xff; // temporary
-  pioc->sodr = pressedButton; // temporary
-  
-  if (pressedButton == SW0) {
-    /* do something */
-  } else if (pressedButton == SW1) {
-    /* do something */
-  } else if (pressedButton == SW2) {
-    /* do something */
-  } else if (pressedButton == SW3) {
-    /* do something */
-  } else if (pressedButton == SW4) {
-    /* do something */
-  } else if (pressedButton == SW5) {
-    /* do something */
-  } else if (pressedButton == SW6) {
-    /* do something */
-  } else if (pressedButton == SW7) {
-    /* do something */
+  int statusRegister = piob->isr;
+  int pressedButtons = statusRegister & 0xff; // Filter away excess bits
+
+  switch (pressedButtons) {
+    case SW0:
+      playingSound = SW0;
+      break;
+    case SW1:
+      playingSound = SW1;
+      break;
+    case SW2:
+      playingSound = SW2;
+      break;
+    case SW3:
+      playingSound = SW3;
+      break;
+    case SW4:
+      playingSound = SW4;
+      break;
+    case SW5:
+      playingSound = SW5;
+      break;
+    case SW6:
+      playingSound = SW6;
+      break;
+    case SW7:
+      playingSound = SW7;
+      break;
+    default:
+      break;
   }
+
+  pioc->sodr = playingSound;
 }
 
-void abdac_isr(void) {}
+void abdac_isr(void) {
+  int statusRegister = abdac->isr;
+  short channelData = rand();
+  
+  abdac->SDR.channel0 = ;
+  abdac->SDR.channel1 = ;
+  
+}

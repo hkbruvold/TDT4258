@@ -4,7 +4,6 @@
  *
  * Headerfil
  *
-
  *****************************************************************************/
 
 #ifndef EX_2_H /* vanlig måte å unngå headerrekursjon på */
@@ -21,15 +20,16 @@
 #define BUTTONS_INT_LEVEL 0
 
 /* Button makros */
-#define SW0 0b1
-#define SW1 0b10
-#define SW2 0b100
-#define SW3 0b1000
-#define SW4 0b10000
-#define SW5 0b100000
-#define SW6 0b1000000
-#define SW7 0b10000000
+#define SW0 1   //0b1
+#define SW1 2   //0b10
+#define SW2 4   //0b100
+#define SW3 8   //0b1000
+#define SW4 16  //0b10000
+#define SW5 32  //0b100000
+#define SW6 64  //0b1000000
+#define SW7 128 //0b10000000
 
+extern int playingSound;
 
 /* prototyper */
 int main (int argc, char *argv[]);
