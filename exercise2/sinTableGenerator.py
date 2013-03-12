@@ -39,7 +39,7 @@ for i in range(len(notes)):
     sys.stdout.write(str(int(table.pop(0))))
     for a in table:
         sys.stdout.write(", " + str(int(a)))
-    sys.stdout.write("}")
+    sys.stdout.write("};")
     
     sys.stdout.write("\n")
 
