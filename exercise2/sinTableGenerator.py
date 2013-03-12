@@ -31,14 +31,15 @@ def generate(frequency, sampleRate, maxAmplitude):
     
     return table
 
-def printTable(table):
-    sys.stdout.write("[")
+for i in range(len(notes)):
+    table = map(int, generate(frequencies[i], sampleRate, maxAmplitude))
+    sys.stdout.write(notes[i] + "[" + str(len(table)) + "]" + " = ")
+    
+    sys.stdout.write("{")
+    sys.stdout.write(str(int(table.pop(0))))
     for a in table:
         sys.stdout.write(", " + str(int(a)))
-    sys.stdout.write("]")
-
-for i in range(len(notes)):
-    sys.stdout.write(notes[i] + " = ")
-    sys.stdout.write(str(map(int, generate(frequencies[i], sampleRate, maxAmplitude))))
+    sys.stdout.write("}")
+    
     sys.stdout.write("\n")
 
