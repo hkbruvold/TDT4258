@@ -7,6 +7,7 @@
 #ifndef SINTABLES_H
 #define SINTABLES_H
 
+extern const short pause[16];
 extern const short C4[184];
 extern const short Cs4[174];
 extern const short D4[164];

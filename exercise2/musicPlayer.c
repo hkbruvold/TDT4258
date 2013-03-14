@@ -7,40 +7,52 @@
 #include "musicPlayer.h"
 
 int melPos;
-long notePos;
+long notePos = 0;
 long samplesLeft;
 char *currentMelody;
 int curBPM;
 char curNote;
 int curOctave;
-int silence;
+int silence = 1;
+int newNote = 0;
 
 
-short getNextSample(void) {
+short getNextSample(long foo) {
   if (silence) {
+    clearLEDs();
     return (short) 0;
   }
   if (samplesLeft == 0) {
-    melPos++;
-    curNote = currentMelody[melPos];
-    melPos++;
-    curOctave = currentMelody[melPos];
-    melPos++;
-    samplesLeft = 48000 * ((double) curBPM / 60) / (int) currentMelody[melPos];
-
-    if (melPos >= sizeof(currentMelody) / sizeof(currentMelody[0]) - 1) {
+    if (newNote) {
+      newNote = 0;
+      samplesLeft = 100;
+      curNote = 'p';
+      curOctave = 4;
+    } else {
+      newNote = 1;
+      melPos++;
+      curNote = (char) currentMelody[melPos];
+      melPos++;
+      curOctave = (int) (currentMelody[melPos] - '0');
+      melPos++;
+      samplesLeft = (int) (48000 / (curBPM / 60.0)) / (int) (currentMelody[melPos] - '0');
+      if (curNote == 'p') {
+        samplesLeft = 2000;
+      }
+    }
+    
+    if (currentMelody[melPos + 1] == 'q') {
       silence = 1;
-      clearLEDs();
-      return (short) 0;
     }
   }
   notePos++;
   samplesLeft--;
-  return getNoteData(curNote, curOctave, notePos);
+  return getNoteData(curNote, 4, notePos);
 }
 
 void playMelody(int melodyNumber) {
   silence = 0;
+  clearLEDs();
 
   switch (melodyNumber) {
     case 0:
@@ -79,7 +91,7 @@ void playMelody(int melodyNumber) {
       silence = 1;
       break;
   }
-  melPos = 0;
+  melPos = -1;
   notePos = 0;
   samplesLeft = 0;
 }

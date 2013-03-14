@@ -11,9 +11,8 @@
 
 #include "melodies.h"
 #include "notes.h"
-#include "ex1.h"
 
-short getNextSample();
+short getNextSample(long foo);
 void playMelody(int melodyNumber);
 
 #endif

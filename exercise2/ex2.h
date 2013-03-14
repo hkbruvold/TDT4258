@@ -30,6 +30,8 @@
 #define SW6 64  //0b1000000
 #define SW7 128 //0b10000000
 
+extern int foo;
+
 /* prototyper */
 int main (int argc, char *argv[]);
 void clearLEDs(void);

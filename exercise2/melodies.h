@@ -17,6 +17,7 @@ extern int dunDunDUNNN1BPM;
 extern int dunDunDUNNN2BPM;
 extern int marioBPM;
 
+extern char lisa[];
 extern char GreenSleves[];
 extern char RickRoll[];
 extern char IsThereAnybodyOutThere[];
