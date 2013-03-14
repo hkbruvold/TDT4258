@@ -20,7 +20,7 @@ int main (int argc, char *argv[]) {
 }
 
 void clearLEDs(void) {
-  poic->codr = 0xff;
+  pioc->codr = 0xff;
 }
 
 void initHardware (void) {
@@ -101,7 +101,7 @@ void button_isr(void) {
       pioc->sodr = 64;
       break;
     case SW7:
-      playMelody7();
+      playMelody(7);
       pioc->sodr = 128;
       break;
     default:
