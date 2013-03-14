@@ -51,5 +51,5 @@ short getNoteData(char note, int octave, long pos) {
       break;
   }
   
-  return noteArray[realPos % (sizeof(noteArray) / sizeof(noteArray))]
+  return noteArray[realPos % (sizeof(noteArray) / sizeof(noteArray))];
 }
