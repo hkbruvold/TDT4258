@@ -32,11 +32,14 @@
 
 /* prototyper */
 int main (int argc, char *argv[]);
+void clearLEDs(void);
+
 static void initIntc(void);
 static void initButtons(void);
 static void initLeds(void);
 static void initAudio(void);
 static void initHardware (void);
+
 
 static void button_isr(void);
 static void abdac_isr(void);

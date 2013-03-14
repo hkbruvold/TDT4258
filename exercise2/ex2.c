@@ -111,7 +111,7 @@ void button_isr(void) {
 
 void abdac_isr(void) {
   int statusRegister = abdac->isr;
-  short channelData = getNextData();
+  short channelData = getNextSample();
   
   abdac->SDR.channel0 = channelData;
   abdac->SDR.channel1 = channelData;
