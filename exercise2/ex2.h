@@ -1,19 +1,20 @@
 /*****************************************************************************
  * 
- * Øving 2 UCSysDes
- *
- * Headerfil
+ * Exercise 2
  *
  *****************************************************************************/
 
-#ifndef EX_2_H /* vanlig måte å unngå headerrekursjon på */
+#ifndef EX_2_H
 #define EX_2_H
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <avr32/ap7000.h> /* inkludere Atmel-headerfil */
 #include <sys/interrupts.h>
+
+#include "musicPlayer.h"
 
 /* legg andre "includes" her, sammen med "defines" og prototyper */
 #define ABDAC_INT_LEVEL 0
@@ -28,8 +29,6 @@
 #define SW5 32  //0b100000
 #define SW6 64  //0b1000000
 #define SW7 128 //0b10000000
-
-extern int playingSound;
 
 /* prototyper */
 int main (int argc, char *argv[]);

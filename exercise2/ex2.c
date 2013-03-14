@@ -1,6 +1,6 @@
 /*****************************************************************************
  * 
- * Øving 2 UCSysDes
+ * Exercise 2 - main file
  *
  *****************************************************************************/
 
@@ -11,7 +11,6 @@ volatile avr32_pio_t *pioc = &AVR32_PIOC;	// pioc; leds
 volatile avr32_abdac_t *abdac = &AVR32_ABDAC;
 volatile avr32_pm_t *pm = &AVR32_PM;
 
-int playingSound;
 
 int main (int argc, char *argv[]) {
   initHardware();
@@ -20,14 +19,17 @@ int main (int argc, char *argv[]) {
   return 0;
 }
 
-/* funksjon for å initialisere maskinvaren, må utvides */
+void clearLEDs(void) {
+  poic->codr = 0xff;
+}
+
 void initHardware (void) {
   initIntc();
   initLeds();
   initButtons();
   initAudio();
 
-  pioc->codr = 0xff;
+  clearLEDs();
 }
 
 void initIntc(void) {
@@ -67,45 +69,51 @@ void initAudio(void) {
 
 void button_isr(void) {
   int statusRegister = piob->isr;
-  int pressedButtons = statusRegister & 0xff; // Filter away excess bits
+  int pressedButton = statusRegister & 0xff; // Filter away excess bits
 
-  switch (pressedButtons) {
+  switch (pressedButton) {
     case SW0:
-      playingSound = SW0;
+      playMelody(0);
+      pioc->sodr = 1;
       break;
     case SW1:
-      playingSound = SW1;
+      playMelody(1);
+      pioc->sodr = 2;
       break;
     case SW2:
-      playingSound = SW2;
+      playMelody(2);
+      pioc->sodr = 4;
       break;
     case SW3:
-      playingSound = SW3;
+      playMelody(3);
+      pioc->sodr = 8;
       break;
     case SW4:
-      playingSound = SW4;
+      playMelody(4);
+      pioc->sodr = 16;
       break;
     case SW5:
-      playingSound = SW5;
+      playMelody(5);
+      pioc->sodr = 32;
       break;
     case SW6:
-      playingSound = SW6;
+      playMelody(6);
+      pioc->sodr = 64;
       break;
     case SW7:
-      playingSound = SW7;
+      playMelody7();
+      pioc->sodr = 128;
       break;
     default:
       break;
   }
-
-  pioc->sodr = playingSound;
 }
 
 void abdac_isr(void) {
   int statusRegister = abdac->isr;
-  short channelData = rand();
+  short channelData = getNextData();
   
-  abdac->SDR.channel0 = ;
-  abdac->SDR.channel1 = ;
+  abdac->SDR.channel0 = channelData;
+  abdac->SDR.channel1 = channelData;
   
 }
