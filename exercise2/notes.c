@@ -9,3 +9,5 @@ String BluesRight = "e32---e34---F32--F34---e32---e34---F32--F34---e32---e34---F
 
 String dunDunDUNNN1 =  "g24---F24---e22---";
 String dunDunDUNNN2 =  "d34---C34---b22---";
+
+String mario = "e58e58---e58---c58e54g54---g44---c58---g48---e48---a48---b48---A48g48---g44e54g54a58---f58g54e58---c58d58b48---c58---g48---e48---a48---b48---A48g48---g44e54g54a58---f58g54e58---c58d58b48---";
