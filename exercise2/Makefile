@@ -8,14 +8,14 @@
 CC = avr32-gcc # is also used for linking
 CFLAGS = -Wall -g -Iinclude
 LDFLAGS = -g -Wall -pedantic -Llib -lavr32b-interrupts -lm
-SOURCES = ex2.c
+SOURCES = ex2.c musicPlayer.c notes.c sinTables.c melodies.c
 OBJECTS = $(SOURCES:.c=.o)
 OUTFILE = ex2.elf
 
 AVR32PROGRAM = avr32program
 
 all: $(OUTFILE)
-	
+
 
 # link
 $(OUTFILE): $(OBJECTS)
