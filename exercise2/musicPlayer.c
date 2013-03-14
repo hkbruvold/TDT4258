@@ -17,7 +17,7 @@ int silence = 1;
 int newNote = 0;
 
 
-short getNextSample(long foo) {
+short getNextSample(void) {
   if (silence) {
     clearLEDs();
     return (short) 0;

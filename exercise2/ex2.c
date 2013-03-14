@@ -11,8 +11,6 @@ volatile avr32_pio_t *pioc = &AVR32_PIOC;	// pioc; leds
 volatile avr32_abdac_t *abdac = &AVR32_ABDAC;
 volatile avr32_pm_t *pm = &AVR32_PM;
 
-int foo = 0;
-
 int main (int argc, char *argv[]) {
   initHardware();
 
@@ -112,9 +110,8 @@ void button_isr(void) {
 
 void abdac_isr(void) {
   abdac->isr;
-  short channelData = getNextSample(foo);
+  short channelData = getNextSample();
 
   abdac->SDR.channel0 = channelData;
   abdac->SDR.channel1 = channelData;
-  foo++;
 }

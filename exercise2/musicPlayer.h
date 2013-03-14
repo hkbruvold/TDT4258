@@ -12,7 +12,7 @@
 #include "melodies.h"
 #include "notes.h"
 
-short getNextSample(long foo);
+short getNextSample(void);
 void playMelody(int melodyNumber);
 
 #endif
