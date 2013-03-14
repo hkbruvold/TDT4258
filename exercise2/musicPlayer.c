@@ -1,14 +1,10 @@
 /*****************************************************************************
  * 
- * Exercise 2 - main file
+ * Exercise 2 - music player
  *
  *****************************************************************************/
 
 #include "musicPlayer.h"
-#include "melodies.h"
-#include "notes.h"
-#include "ex2.c"
-#include <string.h>
 
 int melPos;
 long notePos;
@@ -26,7 +22,7 @@ short getNextSample(void) {
   }
   if (samplesLeft == 0) {
     melPos++;
-    curNote = currentMelody[melPol];
+    curNote = currentMelody[melPos];
     melPos++;
     curOctave = currentMelody[melPos];
     melPos++;
@@ -57,7 +53,7 @@ void playMelody(int melodyNumber) {
       break;
     case 2:
       currentMelody = IsThereAnybodyOutThere;
-      curBPM = IsThereanybodyOutThereBPM;
+      curBPM = IsThereAnybodyOutThereBPM;
       break;
     case 3:
       currentMelody = BluesLeft;
