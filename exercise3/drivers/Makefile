@@ -7,14 +7,14 @@
 MODULE=button.c
 
 ifneq ($(KERNELRELEASE),)
-    obj-m := ${MODULE}.o
+	obj-m := ${MODULE}.o
 
 else
 
-    KERNELDIR ?= /lib/modules/$(shell uname -r)/build
-    PWD := $(shell pwd)
+	KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+	PWD := $(shell pwd)
 
 default:
-    $(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 endif
