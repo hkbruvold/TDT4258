@@ -45,7 +45,11 @@ volatile avr32_pio_t *piob = &AVR32_PIOB;
 
 static int __init button_init(void)
 {
+  int ret;
+  dev_t dev_no
+
   // allocate device number
+  ret = alloc_chrdev_region(&dev_no, 0, 1,"button");
 
   // ask for access to I/O ports
 
