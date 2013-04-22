@@ -4,7 +4,7 @@
 #
 ###############################################################################
 
-MODULE=button.c
+MODULE=hello
 
 ifneq ($(KERNELRELEASE),)
 	obj-m := ${MODULE}.o
