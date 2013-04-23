@@ -10,7 +10,7 @@ SOURCES = test.c
 OUTFILE = test
 
 all:
-	$(CC) $^ $(CFLAGS) -o $(OUTFILE)
+	$(CC) *.c $(CFLAGS) -o $(OUTFILE)
 
 .PHONY: clean
 clean:
