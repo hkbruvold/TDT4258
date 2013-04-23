@@ -8,15 +8,16 @@
 
 int main(void)
 {
-  int led;
+  int button;
   
-  led = open("/dev/led", O_RDONLY);
+  button = open("/dev/button", O_RDONLY);
   
-  char buffer = 0x55;
+  char buffer = 0;
   
-  if (write(led, buffer, 1) != 0)
+  if (read(button, buffer, 1) != 0)
   {
     printf("something went wrong\n");
   }
-  close(led);
+  printf("output: %i", buffer);
+  close(button);
 }
