@@ -29,7 +29,7 @@ static ssize_t button_write (struct file *filp, const char __user *buff,
 
 /* fops-struct */
 
-static struct file_operations driver_fops = {
+static struct file_operations button_fops = {
   .owner = THIS_MODULE,
   .read = button_read,
   .write = button_write,
@@ -55,19 +55,19 @@ static int __init button_init(void)
   // allocate device number
   mjnr = alloc_chrdev_region(&dev_no, 0, 1,"button");
 
-  printk(KERN_NOTICE "Button driver: allocated device with major number = %i and minor numbers 0...255", mjnr);
+  printk(KERN_NOTICE "Button driver: allocated device with major number = %i dev_no %i and minor numbers 0...255", mjnr, (int) dev_no);
 
   // allocate access for I/O ports
   // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
   request_region(AVR32_PIOB_ADDRESS, 1024, "button"); 
 
   // initialise PIO hardware
-  piob->per = 0xff;
-  piob->puer = 0xff;
-  piob->ier = 0xff;
+  piob->per = 0x4001e700;
+  piob->puer = 0x4001e700;
+  piob->ier = 0x4001e700;
 
   // register device in system
-  ret = register_chrdev(mjnr, "button", &driver_fops);
+  ret = register_chrdev(mjnr, "button", &button_fops);
   if(ret < 0)
   {
     printk(KERN_WARNING "Button driver: can\'t register character device with errorcode = %i", ret);
@@ -96,10 +96,18 @@ static int button_release(struct inode *inode, struct file *filp)
 static ssize_t button_read(struct file *filp, char __user *buff,
               size_t count, loff_t *offp) 
 {
-  char *output;
-  int button_pdsr = piob->pdsr;
+  char *output = 0;
+  int button_pdsr = ~(piob->pdsr);
 
-  output = (char*) button_pdsr;
+  if (button_pdsr && 0x100) { output += 0x1; }
+  if (button_pdsr && 0x200) { output += 0x2; }
+  if (button_pdsr && 0x400) { output += 0x4; }
+  if (button_pdsr && 0x2000) { output += 0x8; }
+  if (button_pdsr && 0x4000) { output += 0x10; }
+  if (button_pdsr && 0x8000) { output += 0x20; }
+  if (button_pdsr && 0x10000) { output += 0x40; }
+  if (button_pdsr && 0x40000000) { output += 0x80; }
+  
 
   copy_to_user(buff, output, 1);
   return 0;
@@ -111,7 +119,7 @@ static ssize_t button_write(struct file *filp, const char __user *buff,
   return 0;
 }
 
-
+MODULE_LICENSE("GPL");
 module_init(button_init);
 module_exit(button_exit);
 

@@ -29,7 +29,7 @@ static ssize_t led_write (struct file *filp, const char __user *buff,
 
 /* fops-struct */
 
-static struct file_operations driver_fops = {
+static struct file_operations led_fops = {
   .owner = THIS_MODULE,
   .read = led_read,
   .write = led_write,
@@ -39,7 +39,7 @@ static struct file_operations driver_fops = {
 
 /*****************************************************************************/
 
-volatile avr32_pio_t *pioc = &AVR32_PIOC;
+volatile avr32_pio_t *piob = &AVR32_PIOB;
 
 int mjnr = 0;
 
@@ -53,17 +53,17 @@ static int __init led_init(void)
   // allocate device number
   mjnr = alloc_chrdev_region(&dev_no, 0, 1, "led");
 
-  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor numbers 0...255", mjnr);
+  printk(KERN_NOTICE "LED driver: allocated device with major number = %i dev_no %i and minor numbers 0...255", mjnr, (int) dev_no);
 
   // ask for access to I/O ports
-  request_region(AVR32_PIOC_ADDRESS, 1024, "led");
+  request_region(AVR32_PIOB_ADDRESS, 1024, "led");
 
   // initialise PIO hardware
-  pioc->per = 0xff;
-  pioc->oer = 0xff;
+  piob->per = 0xff;
+  piob->oer = 0xff;
 
   // register device in system
-  ret = register_chrdev(mjnr, "led", &driver_fops);
+  ret = register_chrdev(mjnr, "led", &led_fops);
   if(ret < 0)
   {
     printk(KERN_WARNING "LED driver: can\'t register character device with errorcode = %i", ret);
@@ -75,7 +75,7 @@ static int __init led_init(void)
 static void __exit led_exit(void)
 {
   printk(KERN_NOTICE "LED driver: unloading driver");
-  release_region(AVR32_PIOC_ADDRESS, 1024);
+  release_region(AVR32_PIOB_ADDRESS, 1024);
   unregister_chrdev(mjnr, "led");
 }
 
@@ -90,11 +90,11 @@ static int led_release (struct inode *inode, struct file *filp) {
 static ssize_t led_read (struct file *filp, char __user *buff,
               size_t count, loff_t *offp) {
   char *output = 0;
-  
-  output = (char*) pioc->pdsr;
+  int button_pdsr = piob->pdsr;
+
+  output = (char*) (button_pdsr && 0xff);
 
   copy_to_user(buff, output, 1);
-
   return 0;
 }
 
@@ -103,12 +103,12 @@ static ssize_t led_write (struct file *filp, const char __user *buff,
   char *input = 0;
   copy_from_user(input, buff, 1);
 
-  pioc->codr = 0xff;
-  pioc->sodr = (int) input;
+  piob->codr = 0xff;
+  piob->sodr = (int) input;
   
   return 0;
 }
 
-
+MODULE_LICENSE("GPL");
 module_init(led_init);
 module_exit(led_exit);
