@@ -54,8 +54,8 @@ static int __init led_init(void)
   // allocate device number
   alloc_chrdev_region(&dev_no, 0, 1, "led");
 
-  mjnr = (int) (dev_no && 0xFFF00000);
-  minr = (int) (dev_no && 0x000FFFFF);
+  mjnr = MAJOR(dev_no);
+  minr = MINOR(dev_no);
 
   printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i", mjnr, minr);
 
