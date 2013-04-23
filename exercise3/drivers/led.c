@@ -42,6 +42,7 @@ static struct file_operations led_fops = {
 volatile avr32_pio_t *piob = &AVR32_PIOB;
 
 int mjnr = 0;
+int minr = 0;
 
 static int __init led_init(void)
 {
@@ -51,9 +52,12 @@ static int __init led_init(void)
   dev_t dev_no;
 
   // allocate device number
-  mjnr = alloc_chrdev_region(&dev_no, 0, 1, "led");
+  alloc_chrdev_region(&dev_no, 0, 1, "led");
 
-  printk(KERN_NOTICE "LED driver: allocated device with major number = %i dev_no %i and minor numbers 0...255", mjnr, (int) dev_no);
+  mjnr = (int) (dev_no && 0xFFF00000);
+  minr = (int) (dev_no && 0x000FFFFF);
+
+  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i", mjnr, minr);
 
   // ask for access to I/O ports
   request_region(AVR32_PIOB_ADDRESS, 1024, "led");

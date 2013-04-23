@@ -44,6 +44,7 @@ static struct file_operations button_fops = {
 volatile avr32_pio_t *piob = &AVR32_PIOB;
 
 int mjnr = 0;
+int minr = 0;
 
 static int __init button_init(void)
 {
@@ -53,9 +54,12 @@ static int __init button_init(void)
   dev_t dev_no;
 
   // allocate device number
-  mjnr = alloc_chrdev_region(&dev_no, 0, 1,"button");
+  alloc_chrdev_region(&dev_no, 0, 1, "button");
 
-  printk(KERN_NOTICE "Button driver: allocated device with major number = %i dev_no %i and minor numbers 0...255", mjnr, (int) dev_no);
+  mjnr = (int) (dev_no && 0xFFF00000);
+  minr = (int) (dev_no && 0x000FFFFF);
+
+  printk(KERN_NOTICE "Button driver: allocated device with major number = %i and minor number %i", mjnr, minr);
 
   // allocate access for I/O ports
   // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
