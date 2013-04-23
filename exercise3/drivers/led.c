@@ -52,7 +52,7 @@ static int __init led_init(void)
   dev_t dev_no;
 
   // allocate device number
-  alloc_chrdev_region(&dev_no, 0, 1, "led");
+  ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
 
   mjnr = MAJOR(dev_no);
   minr = MINOR(dev_no);
@@ -67,7 +67,7 @@ static int __init led_init(void)
   piob->oer = 0xff;
 
   // register device in system
-  ret = register_chrdev(mjnr, "led", &led_fops);
+  //ret = register_chrdev(mjnr, "led", &led_fops);
   if(ret < 0)
   {
     printk(KERN_WARNING "LED driver: can\'t register character device with errorcode = %i", ret);

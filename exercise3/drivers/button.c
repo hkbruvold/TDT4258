@@ -54,7 +54,7 @@ static int __init button_init(void)
   dev_t dev_no;
 
   // allocate device number
-  alloc_chrdev_region(&dev_no, 0, 1, "button");
+  ret = alloc_chrdev_region(&dev_no, 0, 1, "button");
 
   mjnr = MAJOR(dev_no);
   minr = MINOR(dev_no);
@@ -71,7 +71,7 @@ static int __init button_init(void)
   piob->ier = 0x4001e700;
 
   // register device in system
-  ret = register_chrdev(mjnr, "button", &button_fops);
+  //ret = register_chrdev(mjnr, "button", &button_fops);
   if(ret < 0)
   {
     printk(KERN_WARNING "Button driver: can\'t register character device with errorcode = %i", ret);
