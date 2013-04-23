@@ -4,17 +4,21 @@
 #
 ###############################################################################
 
-MODULE=hello
+
 
 ifneq ($(KERNELRELEASE),)
 	obj-m := ${MODULE}.o
 
 else
 
-	KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+	KERNELDIR ?= ../linux/
 	PWD := $(shell pwd)
 
 default:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 endif
+
+.PHONY: clean
+clean:
+	rm -Rf *.ko *.o *.mod.c Module.symvers modules.order
