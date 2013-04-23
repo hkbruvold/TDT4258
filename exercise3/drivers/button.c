@@ -20,21 +20,21 @@
 
 static int __init button_init(void);
 static void __exit button_exit(void);
-static int driver_open (struct inode *inode, struct file *filp);
-static int driver_release (struct inode *inode, struct file *filp);
-static ssize_t driver_read (struct file *filp, char __user *buff,
+static int button_open (struct inode *inode, struct file *filp);
+static int button_release (struct inode *inode, struct file *filp);
+static ssize_t button_read (struct file *filp, char __user *buff,
                      size_t count, loff_t *offp);
-static ssize_t driver_write (struct file *filp, const char __user *buff,
+static ssize_t button_write (struct file *filp, const char __user *buff,
                       size_t count, loff_t *offp);
 
 /* fops-struct */
 
 static struct file_operations driver_fops = {
   .owner = THIS_MODULE,
-  .read = driver_read,
-  .write = driver_write,
-  .open = driver_open,
-  .release = driver_release
+  .read = button_read,
+  .write = button_write,
+  .open = button_open,
+  .release = button_release
 };
 
 /*****************************************************************************/
@@ -43,15 +43,23 @@ static struct file_operations driver_fops = {
 
 volatile avr32_pio_t *piob = &AVR32_PIOB;
 
+int mjnr = 0;
+
 static int __init button_init(void)
 {
+  printk(KERN_NOTICE "Button driver: Loading driver");
+
   int ret;
-  dev_t dev_no
+  dev_t dev_no;
 
   // allocate device number
-  ret = alloc_chrdev_region(&dev_no, 0, 1,"button");
+  mjnr = alloc_chrdev_region(&dev_no, 0, 1,"button");
 
-  // ask for access to I/O ports
+  printk(KERN_NOTICE "Button driver: allocated device with major number = %i and minor numbers 0...255", mjnr);
+
+  // allocate access for I/O ports
+  // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
+  request_region(AVR32_PIOB_ADDRESS, 1024, "button"); 
 
   // initialise PIO hardware
   piob->per = 0xff;
@@ -59,31 +67,51 @@ static int __init button_init(void)
   piob->ier = 0xff;
 
   // register device in system
+  ret = register_chrdev(mjnr, "button", &driver_fops);
+  if(ret < 0)
+  {
+    printk(KERN_WARNING "Button driver: can\'t register character device with errorcode = %i", ret);
+    return ret;
+  }
+  return 0;
 }
 
-static void __exit button_init(void)
+static void __exit button_exit(void)
 {
+  printk(KERN_NOTICE "Button driver: unloading driver");
+  release_region(AVR32_PIOB_ADDRESS, 1024);
+  unregister_chrdev(mjnr, "button");
 }
 
-static int driver_open (struct inode *inode, struct file *filp) {
+static int button_open(struct inode *inode, struct file *filp) 
+{
   return 0;
 }
 
-static int driver_release (struct inode *inode, struct file *filp) {
+static int button_release(struct inode *inode, struct file *filp) 
+{
   return 0;
 }
 
-static ssize_t driver_read (struct file *filp, char __user *buff,
-              size_t count, loff_t *offp) {
+static ssize_t button_read(struct file *filp, char __user *buff,
+              size_t count, loff_t *offp) 
+{
+  char *output;
+  int button_pdsr = piob->pdsr;
+
+  output = (char*) button_pdsr;
+
+  copy_to_user(buff, output, 1);
   return 0;
 }
 
-static ssize_t driver_write (struct file *filp, const char __user *buff,
-               size_t count, loff_t *offp) {
+static ssize_t button_write(struct file *filp, const char __user *buff,
+               size_t count, loff_t *offp) 
+{
   return 0;
 }
 
 
-module_init(button_exit);
+module_init(button_init);
 module_exit(button_exit);
 
