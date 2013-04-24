@@ -45,17 +45,18 @@ volatile avr32_pio_t *piob = &AVR32_PIOB;
 
 int mjnr = 0;
 int minr = 0;
+dev_t dev_no;
 
 static int __init button_init(void)
 {
   printk(KERN_NOTICE "Button driver: Loading driver");
 
   int ret;
-  dev_t dev_no;
 
 
   // allocate access for I/O ports
   // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
+  request_region(AVR32_PIOB_ADDRESS, 1024, "button"); 
   
   // initialise PIO hardware
   piob->per = 0x4001e700;
@@ -63,22 +64,17 @@ static int __init button_init(void)
   piob->ier = 0x4001e700;
 
   // register device in system
-  request_region(AVR32_PIOB_ADDRESS, 1024, "button"); 
+  ret = alloc_chrdev_region(&dev_no, 0, 1, "button");
   if(ret < 0)
   {
     printk(KERN_WARNING "Button driver: can\'t register character device with errorcode = %i \n", ret);
     return ret;
   }
 
-  // allocate device number
-  ret = alloc_chrdev_region(&dev_no, 0, 1, "button");
-
   mjnr = MAJOR(dev_no);
   minr = MINOR(dev_no);
 
   printk(KERN_NOTICE "Button driver: allocated device with major number = %i and minor number %i \n", mjnr, minr);
-
-
 
   return 0;
 }
@@ -87,7 +83,7 @@ static void __exit button_exit(void)
 {
   printk(KERN_NOTICE "Button driver: unloading driver");
   release_region(AVR32_PIOB_ADDRESS, 1024);
-  unregister_chrdev(mjnr, "button");
+  unregister_chrdev(MAJOR(dev_no), "button");
 }
 
 static int button_open(struct inode *inode, struct file *filp) 
@@ -100,9 +96,8 @@ static int button_release(struct inode *inode, struct file *filp)
   return 0;
 }
 
-# , loff_t *offp
-static ssize_t button_read(struct file *filp, char __user *buff,
-              size_t count) 
+static ssize_t button_read (struct file *filp, char __user *buff,
+              size_t count, loff_t *offp)
 {
   char *output = 0;
   int button_pdsr = ~(piob->pdsr);
