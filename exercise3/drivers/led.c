@@ -52,12 +52,11 @@ static int __init led_init(void)
   dev_t dev_no;
 
   // allocate device number
-  ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
-
+  
   mjnr = MAJOR(dev_no);
   minr = MINOR(dev_no);
 
-  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i", mjnr, minr);
+  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i \n", mjnr, minr);
 
   // ask for access to I/O ports
   request_region(AVR32_PIOB_ADDRESS, 1024, "led");
@@ -67,7 +66,7 @@ static int __init led_init(void)
   piob->oer = 0xff;
 
   // register device in system
-  //ret = register_chrdev(mjnr, "led", &led_fops);
+  ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
   if(ret < 0)
   {
     printk(KERN_WARNING "LED driver: can\'t register character device with errorcode = %i", ret);
