@@ -8,18 +8,18 @@
 
 int main(void)
 {
-  int button_fd;
+  int led_fd;
   
-  button_fd = open("/dev/button", O_RDONLY, 0);
-  printf("%i",button_fd);
+  led_fd = open("/dev/led", O_RDWR, 0);
+  printf("%i",led_fd);
 
-  char buffer;
+  //char buffer;
   int e;
 
-  if (e = read(button_fd, buffer, 1) < 0)
+  if (e = write(led_fd, 0x55, 1) < 0)
   {
     printf("something went wrong, error code %i", e);
   }
-  printf("output: %i\n", buffer);
-  close(button_fd);
+  //printf("output: %i\n", );
+  close(led_fd);
 }

@@ -37,39 +37,51 @@ static struct file_operations led_fops = {
   .release = led_release
 };
 
+/* cdev struct */
+
+struct cdev *led_cdev;
+
 /*****************************************************************************/
 
 volatile avr32_pio_t *piob = &AVR32_PIOB;
 
-int mjnr = 0;
-int minr = 0;
 dev_t dev_no;
 
 static int __init led_init(void)
 {
+  int ret;
+  
   printk(KERN_NOTICE "LED driver: Loading driver");
 
-  int ret;
-  // allocate device number
 
-  // ask for access to I/O ports
-  request_region(AVR32_PIOB_ADDRESS, 1024, "led");
+  // allocate major and minor number
+  ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
+  if(ret < 0)
+  {
+    printk(KERN_WARNING "LED driver: can\'t register character device with errorcode = %i \n", ret);
+    return 1;
+  }
+  int mjnr = MAJOR(dev_no);
+  int minr = MINOR(dev_no);
 
+  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i \n", mjnr, minr);
+
+  // allocate access for I/O ports
+  // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
+  request_region(AVR32_PIOB_ADDRESS, 1024000, "led"); 
+  
   // initialise PIO hardware
   piob->per = 0xff;
   piob->oer = 0xff;
 
   // register device in system
-  ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
-  if(ret < 0)
+  led_cdev = cdev_alloc();
+  led_cdev->ops = &led_fops;
+  //cdev_init(led_cdev, &led_fops);
+  if (cdev_add(led_cdev, dev_no, 1) != 0)
   {
-    printk(KERN_WARNING "LED driver: can\'t register character device with errorcode = %i", ret);
-    return ret;
+    printk(KERN_WARNING "LED driver: Error when adding driver to system");
   }
-
-  mjnr = MAJOR(dev_no);
-  minr = MINOR(dev_no);
-  printk(KERN_NOTICE "LED driver: allocated device with major number = %i and minor number %i \n", mjnr, minr);
 
   return 0;
 }
