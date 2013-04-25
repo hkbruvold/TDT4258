@@ -7,6 +7,6 @@
 #ifndef LOGIC
 #define LOGIC
 
-
+void move_driver(int direction);
 
 #endif

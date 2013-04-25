@@ -12,6 +12,6 @@
 #include <linux/soundcard.h>
 #include <fcntl.h> 
 
-playSound(char *filename);
+int playSound(char *filename);
 
 #endif
