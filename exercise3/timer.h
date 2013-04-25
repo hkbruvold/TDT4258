@@ -4,9 +4,12 @@
  *
  ******************************************************************************/
 
+#ifndef TIMER
+#define TIMER
 
+#include <sys/time.h>  
+#include <stdio.h>
 
+int check_time(void);
 
-
- #include <sys/time.h>  
- #include <stdio.h> 
+#endif
