@@ -6,12 +6,11 @@
 
 CC = avr32-linux-gcc
 CFLAGS = -g
-SOURCES = test.c
-OUTFILE = test
+
 
 all:
-	$(CC) *.c $(CFLAGS) -o $(OUTFILE)
+	$(CC) $(IN) $(CFLAGS) -o $(OUT)
 
 .PHONY: clean
 clean:
-	rm $(OUTFILE)
+	rm $(OUT)
