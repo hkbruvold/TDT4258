@@ -1,15 +1,12 @@
 /******************************************************************************
  *
- * Timer header file
+ * Logic header file
  *
  ******************************************************************************/
 
-#ifndef TIMER
-#define TIMER
+#ifndef LOGIC
+#define LOGIC
 
-#include <sys/time.h>  
-#include <stdio.h>
 
-int check_time(void);
 
 #endif

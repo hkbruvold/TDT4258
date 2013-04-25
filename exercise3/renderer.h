@@ -4,6 +4,9 @@
  *
  ******************************************************************************/
 
+#ifndef RENDERER
+#define RENDERER
+
 #include <stdio.h>
 #include <linux/fb.h>
 #include <sys/mman.h>
@@ -11,8 +14,14 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int main(void);
+#define ROWS 240
+#define COLUMN 320
+#define PIXELS 76800
+
 int init_fd(void);
 int close_fd(void);
 int set_background(void);
-int make_stripes(void);
+void init_stripes(void);
+void move_stripes(void);
+
+#endif

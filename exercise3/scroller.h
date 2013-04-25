@@ -1,15 +1,17 @@
 /******************************************************************************
  *
- * Timer header file
+ * Scroller header file
  *
  ******************************************************************************/
 
-#ifndef TIMER
-#define TIMER
+#ifndef SCROLLER
+#define SCROLLER
 
-#include <sys/time.h>  
-#include <stdio.h>
+#include "timer.h"
+#include "renderer.h"
 
-int check_time(void);
+int main(void);
+void time_loop(void);
+void scroll_forwards(void);
 
 #endif
