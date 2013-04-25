@@ -1,0 +1,2 @@
+to compile:
+make ARCH=avr32 CROSS_COMPILE=avr32-linux- MODULE=[led/button]

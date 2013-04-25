@@ -1,0 +1,2 @@
+to compile:
+make IN=[desired infile(s)] OUT=[outfile]
