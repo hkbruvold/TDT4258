@@ -52,7 +52,7 @@ static int __init led_init(void)
   int ret;
   
   printk(KERN_NOTICE "LED driver: Loading driver");
-
+  
 
   // allocate major and minor number
   ret = alloc_chrdev_region(&dev_no, 0, 1, "led");
@@ -68,7 +68,7 @@ static int __init led_init(void)
 
   // allocate access for I/O ports
   // 1024 = AVR32_PIOC_ADDRESS - AVR32_PIOB_ADDRESS
-  request_region(AVR32_PIOB_ADDRESS, 1024000, "led"); 
+  request_region(AVR32_PIOB_ADDRESS, 1024, "led"); 
   
   // initialise PIO hardware
   piob->per = 0xff;
@@ -77,6 +77,7 @@ static int __init led_init(void)
   // register device in system
   led_cdev = cdev_alloc();
   led_cdev->ops = &led_fops;
+  led_cdev->owner = THIS_MODULE;
   //cdev_init(led_cdev, &led_fops);
   if (cdev_add(led_cdev, dev_no, 1) != 0)
   {
@@ -90,7 +91,8 @@ static void __exit led_exit(void)
 {
   printk(KERN_NOTICE "LED driver: unloading driver");
   release_region(AVR32_PIOB_ADDRESS, 1024);
-  unregister_chrdev(MAJOR(dev_no), "led");
+  //unregister_chrdev(MAJOR(dev_no), "led");
+  cdev_del(led_cdev);
 }
 
 static int led_open (struct inode *inode, struct file *filp) {
@@ -104,9 +106,9 @@ static int led_release (struct inode *inode, struct file *filp) {
 static ssize_t led_read (struct file *filp, char __user *buff,
               size_t count, loff_t *offp) {
   char *output = 0;
-  int button_pdsr = piob->pdsr;
+  int led_pdsr = piob->pdsr;
 
-  output = (char*) (button_pdsr && 0xff);
+  output = (char*) (led_pdsr & 0xff);
 
   copy_to_user(buff, output, 1);
   return 0;
@@ -114,13 +116,19 @@ static ssize_t led_read (struct file *filp, char __user *buff,
 
 static ssize_t led_write (struct file *filp, const char __user *buff,
                size_t count, loff_t *offp) {
-  char *input = 0;
-  copy_from_user(input, buff, 1);
+  int input;
+  unsigned long cret;
 
-  piob->codr = 0xff;
-  piob->sodr = (int) input;
+  printk(KERN_NOTICE "*buff: %s\ncount: %i\n*offp: %s", (char *)buff, (int) count, (char *) offp);
   
-  return 0;
+  cret = copy_from_user(&input, buff, count);
+  
+  printk(KERN_NOTICE "copy returned: %i\n", (int) cret);
+  printk(KERN_NOTICE "got: %i\n", input);
+  piob->codr = 0xff;
+  piob->sodr = (input & 0xff);
+  
+  return count;
 }
 
 MODULE_LICENSE("GPL");
