@@ -59,6 +59,19 @@ int set_background(void)
 
 	return 0;
 }
+void single_color(int i, int j, int value)
+{
+	screen_row[i][j] = value;
+}
+void pixel(int i, int j, int blue, int green, int red)
+{
+	// blue:
+	screen_row[i][j+0] = blue;
+	// green:
+	screen_row[i][j+1] = green;
+	// red:
+	screen_row[i][j+2] = red;
+}
 void init_stripes(void)
 {
 	int stripestart = 155;
@@ -68,101 +81,33 @@ void init_stripes(void)
 	{
 		for (count=280;count<360;count++)
 		{
-			int j=(count%320)*3;
-		
-			// blue:
-			screen_row[i][j+0] = 95;
-			// green:
-			screen_row[i][j+1] = 95;
-			// red:
-			screen_row[i][j+2] = 95;
+			pixel(i,(count%320)*3,95,95,95);
 		}
-		// blue:
-		screen_row[i][280*3+0] = 45;
-		// green:
-		screen_row[i][280*3+1] = 45;
-		// red:
-		screen_row[i][280*3+2] = 45;
-		
-		// blue:
-		screen_row[i][281*3+0] = 45;
-		// green:
-		screen_row[i][281*3+1] = 45;
-		// red:
-		screen_row[i][281*3+2] = 45;
-		
-		// blue:
-		screen_row[i][288*3+0] = 45;
-		// green:
-		screen_row[i][288*3+1] = 45;
-		// red:
-		screen_row[i][288*3+2] = 45;
-		
-		// blue:
-//		screen_row[i][289*3+0] = 45;
-		// green:
-//		screen_row[i][289*3+1] = 45;
-		// red:
-//		screen_row[i][289*3+2] = 45;
-		
-		// blue:
-//		screen_row[i][30*3+0] = 45;
-		// green:
-//		screen_row[i][30*3+1] = 45;
-		// red:
-//		screen_row[i][30*3+2] = 45;
-		
-		// blue:
-		screen_row[i][31*3+0] = 45;
-		// green:
-		screen_row[i][31*3+1] = 45;
-		// red:
-		screen_row[i][31*3+2] = 45;
-		
-		// blue:
-		screen_row[i][38*3+0] = 45;
-		// green:
-		screen_row[i][38*3+1] = 45;
-		// red:
-		screen_row[i][38*3+2] = 45;
-		
-		// blue:
-		screen_row[i][39*3+0] = 45;
-		// green:
-		screen_row[i][39*3+1] = 45;
-		// red:
-		screen_row[i][39*3+2] = 45;
+		pixel(i,280*3,45,45,45);
+		pixel(i,281*3,45,45,45);
+		pixel(i,288*3,45,45,45);
+		pixel(i,31*3,45,45,45);
+		pixel(i,38*3,45,45,45);
+		pixel(i,39*3,45,45,45);
 		
 		i++;
 	}
-	
-	
-			
-	
-	
 	for (count=0;count<6;count++)
 	{
-		
 		int j = 0;
 		while (j<30)
 		{
 			int i = stripestart*3;
 			while (i<163*3)
 			{
-				// blue:
-				screen_row[count*40+j][i+0] = 0;
-				// green:
-				screen_row[count*40+j][i+1] = 255;
-				// red:
-				screen_row[count*40+j][i+2] = 255;
+				pixel(count*40+j,i,0,255,255);
+				
 				i=i+3;
 			}
 			j++;
 		}
 	}
-	
-	
-	
+	move_driver(0);
 }
 void move_stripes(void)
 {
@@ -176,92 +121,72 @@ void move_stripes(void)
 		while (i<163*3)
 		{
 			// black stripe:
-			int blackstripe=(rb+count*40)%ROWS;
-			// blue:
-			screen_row[blackstripe][i+0] = 0;
-			// green:
-			screen_row[blackstripe][i+1] = 0;
-			// red:
-			screen_row[blackstripe][i+2] = 0;
+			pixel((rb+count*40)%ROWS,i,0,0,0);
 			
 			// yellow stripe:
-			int yellowstripe=(rb+30+count*40)%ROWS;
-			// blue:
-			screen_row[yellowstripe][i+0] = 0;
-			// green:
-			screen_row[yellowstripe][i+1] = 255;
-			// red:
-			screen_row[yellowstripe][i+2] = 255;
+			pixel((rb+30+count*40)%ROWS,i,0,255,255);
+			
 			i = i+3;
 		}
 		i=0;
 		while (i<6*3)
 		{
 			int insstripe=((rb+count*20)+1)%ROWS;
-			// blue:
-			screen_row[insstripe][32*3+i+0] = 45;
-			// green:
-			screen_row[insstripe][32*3+i+1] = 45;
-			// red:
-			screen_row[insstripe][32*3+i+2] = 45;
-		
-			// blue:
-			screen_row[insstripe][282*3+i+0] = 45;
-			// green:
-			screen_row[insstripe][282*3+i+1] = 45;
-			// red:
-			screen_row[insstripe][282*3+i+2] = 45;
+			
+			pixel(insstripe,32*3+i,45,45,45);
+			pixel(insstripe,282*3+i,45,45,45);
 			
 			insstripe=((rb+count*40)+1)%ROWS;
-			// blue:
-			screen_row[insstripe][32*3+i+0] = 45;
-			// green:
-			screen_row[insstripe][32*3+i+1] = 45;
-			// red:
-			screen_row[insstripe][32*3+i+2] = 45;
-		
-			// blue:
-			screen_row[insstripe][282*3+i+0] = 45;
-			// green:
-			screen_row[insstripe][282*3+i+1] = 45;
-			// red:
-			screen_row[insstripe][282*3+i+2] = 45;
+			
+			pixel(insstripe,32*3+i,45,45,45);
+			pixel(insstripe,282*3+i,45,45,45);
 			
 			int rmstripe=((rb+count*20)%ROWS);
-			// blue:
-			screen_row[rmstripe][32*3+i+0] = 95;
-			// green:
-			screen_row[rmstripe][32*3+i+1] = 95;
-			// red:
-			screen_row[rmstripe][32*3+i+2] = 95;
-		
-			// blue:
-			screen_row[rmstripe][282*3+i+0] = 95;
-			// green:
-			screen_row[rmstripe][282*3+i+1] = 95;
-			// red:
-			screen_row[rmstripe][282*3+i+2] = 95;
+			
+			pixel(rmstripe,32*3+i,95,95,95);
+			pixel(rmstripe,282*3+i,95,95,95);
 			
 			rmstripe=((rb+count*40)%ROWS);
-			// blue:
-			screen_row[rmstripe][32*3+i+0] = 95;
-			// green:
-			screen_row[rmstripe][32*3+i+1] = 95;
-			// red:
-			screen_row[rmstripe][32*3+i+2] = 95;
-		
-			// blue:
-			screen_row[rmstripe][282*3+i+0] = 95;
-			// green:
-			screen_row[rmstripe][282*3+i+1] = 95;
-			// red:
-			screen_row[rmstripe][282*3+i+2] = 95;
+			
+			pixel(rmstripe,32*3+i,95,95,95);
+			pixel(rmstripe,282*3+i,95,95,95);
 			
 			i = i+3;
 		}
 	}
 	
 	rb++;
+}
+void paint_car_column(int column)
+{
+	int i;
+	
+	if (	column == 31
+		|| column == 38
+		|| column == 39
+		|| column == 280
+		|| column == 281
+		|| column == 288)
+		
+		for (i=ROWS-60;i<ROWS;i++)
+		{
+			pixel(i,column*3,45,45,45);
+		}
+	else if (column<164 || column>154)
+		for (i=ROWS-60;i<ROWS;i++)
+		{
+			pixel(i,column*3,0,255,255);
+		}
+	else if (column<280 || column>30)
+		for (i=ROWS-60;i<ROWS;i++)
+		{
+			pixel(i,column*3,0,0,0);
+		}
+	else
+		for (i=ROWS-60;i<ROWS;i++)
+		{
+			pixel(i,column*3,95,95,95);
+		}
 }
 
 

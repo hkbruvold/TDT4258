@@ -21,7 +21,10 @@
 int init_fd(void);
 int close_fd(void);
 int set_background(void);
+void single_color(int i, int j, int value);
+void pixel(int i, int j, int blue, int green, int red);
 void init_stripes(void);
 void move_stripes(void);
+void paint_car_column(int column);
 
 #endif

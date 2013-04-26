@@ -28,13 +28,13 @@ void time_loop(void)
 		c = check_time();
 		if (c > 0)
 		{
-			scroll_forwards();
+			tick();
 			r++;
 		}
 	}
 	return;
 }
-void scroll_forwards(void)
+void tick(void)
 {
 	move_stripes();
 }

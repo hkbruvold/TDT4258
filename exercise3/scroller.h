@@ -9,9 +9,11 @@
 
 #include "timer.h"
 #include "renderer.h"
+#include "logic.h"
+//#include "play_sound.h"
 
 int main(void);
 void time_loop(void);
-void scroll_forwards(void);
+void tick(void);
 
 #endif
