@@ -73,6 +73,9 @@ static int __init led_init(void)
   // initialise PIO hardware
   piob->per = 0xff;
   piob->oer = 0xff;
+  
+  /*turn on all LEDs */
+  piob->sodr = 0xff;
 
   // register device in system
   led_cdev = cdev_alloc();
