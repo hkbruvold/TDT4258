@@ -78,7 +78,6 @@ static int __init led_init(void)
   led_cdev = cdev_alloc();
   led_cdev->ops = &led_fops;
   led_cdev->owner = THIS_MODULE;
-  //cdev_init(led_cdev, &led_fops);
   if (cdev_add(led_cdev, dev_no, 1) != 0)
   {
     printk(KERN_WARNING "LED driver: Error when adding driver to system");
@@ -105,13 +104,6 @@ static int led_release (struct inode *inode, struct file *filp) {
 
 static ssize_t led_read (struct file *filp, char __user *buff,
               size_t count, loff_t *offp) {
-  char *output = 0;
-  int led_pdsr = piob->pdsr;
-
-  output = (char*) (led_pdsr & 0xff);
-
-  copy_to_user(buff, output, 1);
-  return 0;
 }
 
 static ssize_t led_write (struct file *filp, const char __user *buff,
@@ -119,12 +111,14 @@ static ssize_t led_write (struct file *filp, const char __user *buff,
   int input;
   unsigned long cret;
 
-  printk(KERN_NOTICE "*buff: %s\ncount: %i\n*offp: %s", (char *)buff, (int) count, (char *) offp);
+  //printk(KERN_NOTICE "*buff: %s\ncount: %i\n*offp: %s", (char *)buff, (int) count, (char *) offp);
   
   cret = copy_from_user(&input, buff, count);
   
-  printk(KERN_NOTICE "copy returned: %i\n", (int) cret);
-  printk(KERN_NOTICE "got: %i\n", input);
+  //printk(KERN_NOTICE "copy returned: %i\n", (int) cret);
+  //printk(KERN_NOTICE "got: %i\n", input);
+  
+  /* set LEDs according to input */
   piob->codr = 0xff;
   piob->sodr = (input & 0xff);
   

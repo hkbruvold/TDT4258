@@ -74,13 +74,11 @@ static int __init button_init(void)
   // initialise PIO hardware
   piob->per = 0x4001e700;
   piob->puer = 0x4001e700;
-  //piob->ier = 0x4001e700;
 
   // register device in system
   button_cdev = cdev_alloc();
   button_cdev->ops = &button_fops;
   button_cdev->owner = THIS_MODULE;
-  //cdev_init(button_cdev, &button_fops);
   if (cdev_add(button_cdev, dev_no, 1) != 0)
   {
     printk(KERN_WARNING "Button driver: Error when adding driver to system");
@@ -93,8 +91,6 @@ static int __init button_init(void)
 static void __exit button_exit(void)
 {
   printk(KERN_NOTICE "Button driver: unloading driver");
-  //release_region(AVR32_PIOB_ADDRESS, 1024);
-  //unregister_chrdev(MAJOR(dev_no), "button");
   cdev_del(button_cdev);
 }
 
@@ -114,8 +110,9 @@ static ssize_t button_read (struct file *filp, char __user *buff,
   int output = 0x00;
   int button_pdsr = (~(piob->pdsr) & 0x4001e700);
 
-  printk(KERN_NOTICE "button_pdsr: %i", button_pdsr);
+  //printk(KERN_NOTICE "button_pdsr: %i", button_pdsr);
   
+  /* logic to check what button is pressed */
   if (button_pdsr & 0x100) { output += 0x1; printk(KERN_NOTICE "button0"); }
   if (button_pdsr & 0x200) { output += 0x2; printk(KERN_NOTICE "button1"); }
   if (button_pdsr & 0x400) { output += 0x4; printk(KERN_NOTICE "button2"); }
@@ -125,7 +122,8 @@ static ssize_t button_read (struct file *filp, char __user *buff,
   if (button_pdsr & 0x10000) { output += 0x40; printk(KERN_NOTICE "button6"); }
   if (button_pdsr & 0x40000000) { output += 0x80; printk(KERN_NOTICE "button7"); }
 
-  printk(KERN_NOTICE "%i", output);
+  //printk(KERN_NOTICE "%i", output);
+
   copy_to_user(buff, &output, sizeof(buff));
   return count;
 }
