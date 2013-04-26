@@ -6,8 +6,8 @@
 
 #include "logic.h"
 
-// car size = 	______________[car_pos]-----(60 pixels)-----[car_pos+60]________
-//		car is 60 pixels out.
+// car size = 	______________[car_pos]-----(46 pixels)-----[car_pos+45]________
+//		car reaches 60 pixels out.
 
 int driver_pos = 190;
 

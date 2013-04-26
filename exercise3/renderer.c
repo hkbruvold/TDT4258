@@ -59,6 +59,10 @@ int set_background(void)
 
 	return 0;
 }
+void single_color(int i, int j, int value)
+{
+	screen_row[i][j] = value;
+}
 void pixel(int i, int j, int blue, int green, int red)
 {
 	// blue:
@@ -103,6 +107,7 @@ void init_stripes(void)
 			j++;
 		}
 	}
+	move_driver(0);
 }
 void move_stripes(void)
 {
@@ -183,16 +188,8 @@ void paint_car_column(int column)
 			pixel(i,column*3,95,95,95);
 		}
 }
-void paint_driver(int driver_pos)
-{
-	int i;
-	for (i = ROWS-60; i<ROWS; i++)
-	{
-		int j;
-		for (j = driver_pos; j<driver_pos+60; j++)
-			pixel(i,j,55,55,220);
-	}
-}
+
+
 
 
 
